@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:payment/core/formatters/formatter.dart';
 import 'package:payment/core/formatters/input_formatter.dart';
 import 'package:payment/core/tokens/app_colors.dart';
 import 'package:payment/features/home/data/models/transaction_model.dart';
@@ -35,8 +36,9 @@ class _AddTransactionSheetState extends State<AddSheet> {
       id = widget.transaction!.id;
     }
 
-    _amountController.text = widget.transaction?.amount.toString() ?? '';
-
+_amountController.text = widget.transaction != null
+    ? formatMoney(widget.transaction!.amount)
+    : '';
     _whoController.text = widget.transaction?.who ?? '';
 
     _descController.text = widget.transaction?.desc ?? '';
@@ -155,20 +157,30 @@ class _AddTransactionSheetState extends State<AddSheet> {
                         return 'To‘g‘ri summa kiriting';
                       }
 
+                      const epsilon = 0.01; // double xatoligidan himoya
+
+                      // EDIT
                       if (widget.transaction != null) {
-                        final editAmount = amount - widget.transaction!.amount;
+                        final oldTransaction = widget.transaction!;
+
+                        final balanceWithoutOld =
+                            state.balance -
+                            (oldTransaction.type == TransactionType.income
+                                ? oldTransaction.amount
+                                : -oldTransaction.amount);
 
                         if (_type == TransactionType.expense &&
-                            editAmount > state.balance) {
-                          return "sizda buncha balans yo'q";
+                            amount > balanceWithoutOld + epsilon) {
+                          return "Sizda buncha balans yo'q";
                         }
 
                         return null;
                       }
 
+                      // ADD
                       if (_type == TransactionType.expense &&
-                          amount > state.balance) {
-                        return 'sizda buncha balans yoq';
+                          amount > state.balance + epsilon) {
+                        return "Sizda buncha balans yo'q";
                       }
 
                       return null;
