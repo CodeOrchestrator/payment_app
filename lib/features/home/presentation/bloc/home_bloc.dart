@@ -54,10 +54,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         if (transaction.id == event.id) {
           return TransactionModel(
             id: event.id,
-
-
-
-            
             type: event.type,
             amount: event.amount,
             who: event.who,
