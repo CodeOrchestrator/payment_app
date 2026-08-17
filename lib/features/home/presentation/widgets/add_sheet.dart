@@ -157,6 +157,10 @@ _amountController.text = widget.transaction != null
                         return 'To‘g‘ri summa kiriting';
                       }
 
+                      if(amount > 9999999){
+                        return "tizim 9 milliondan ortiq operatsyalarga ruxsat bermaydi";
+                      }
+
                       const epsilon = 0.01; // double xatoligidan himoya
 
                       // EDIT

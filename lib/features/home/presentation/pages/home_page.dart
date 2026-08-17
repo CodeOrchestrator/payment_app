@@ -46,6 +46,24 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  void warning(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Icon(Icons.warning),
+        content: Text("bu yerda 9 999 999 dan ortiq balnsga ruxsat berilmaydi"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              context.pop();
+            },
+            child: Text("ok"),
+          ),
+        ],
+      ),
+    );
+  }
+
   void deleteDialog(BuildContext context, String id) {
     final bloc = context.read<HomeBloc>();
 
@@ -323,10 +341,16 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primary,
-        onPressed: () => openAddSheet(context),
-        child: Icon(Icons.add, color: Colors.white),
+      floatingActionButton: BlocBuilder<HomeBloc, HomeState>(
+        builder: (context, state) {
+          return FloatingActionButton(
+            backgroundColor: AppColors.primary,
+            onPressed: () => state.balance == 9999999
+                ? warning(context)
+                : openAddSheet(context),
+            child: Icon(Icons.add, color: Colors.white),
+          );
+        },
       ),
     );
   }
